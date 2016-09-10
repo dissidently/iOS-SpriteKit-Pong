@@ -2,7 +2,7 @@
 
 An implementation of the classic video game Pong using Sprite Kit, an Apple graphics rendering and animation framework.
 
-This implementation provides a working example of the recommendation in the Sprite Kit programming guide to use Double Dispatch to farm out work associated with node physics body contacts in the simulation.
+This implementation provides a working example of the recommendation in Apple's Sprite Kit programming guide: use Double Dispatch to farm out work associated with node physics body contacts in a simulation.
 
 ![Pong Screenshot](http://ec085a0a5b98f1ec5d97-65c493171c6d6a91bc23f798ea24c60a.r50.cf4.rackcdn.com/pong.jpg)
 
@@ -11,7 +11,7 @@ This implementation provides a working example of the recommendation in the Spri
 
 Our game consists of a PlayfieldScene with a PhysicsBody edge loop, a BallNode, and two PlayerNodes each comprised of a PaddleNode and ScoreNode. The BallNode and PaddleNodes are configured with physics bodies to allow for contact detection.
 
-To replicate the classic gameplay velocities of the BallNode are manually altered on contact with other bodies, rather than relying on the physics collision capabilities of Sprite Kit. The ball's vertical velocity is simply reflected when it hits the top or bottom edge of the PlayFieldScene. 
+To replicate the classic gameplay, velocities of the BallNode are manually altered on contact with other bodies, rather than relying on the physics collision capabilities of Sprite Kit. The ball's vertical velocity is simply reflected when it hits the top or bottom edge of the PlayFieldScene. 
 
 When the ball contacts the  PaddleNode the horizontal velocity is reflected within an interpolated 90 degree arc based on the contact point. The magnitude of the reflected BallNode velocity is proportional to the speed of the PaddleNode on contact.
 
@@ -93,11 +93,11 @@ Another approach to counter the double up is the bitwise sorting approach in the
     }
 ```
 
-This approach will still require further nested conditionals to determine the outcome based on both bodies in the contact, which for all but the most trivial of simulations will most likely be the case. 
+This approach will still require further nested conditionals to determine the outcome based on both bodies in the contact, which (for all but the most trivial of simulations) will most likely be the case. 
 
 ## Physics Body Contacts with Double Dispatch
 
-Using the Visitor pattern we can double dispatch the outcome of the contact based on both bodies. The contact delegate no longer discerns the categroies of the physics body, its implementation shrinks to just the following.
+Using the Visitor pattern we can double dispatch the outcome of the contact based on both bodies. The contact delegate no longer discerns the categories of the physics body, its implementation shrinks to just the following.
 
 ```objective-c
 - (void)didBeginContact:(SKPhysicsContact *)contact
@@ -139,7 +139,7 @@ The _VisitablePhysicsBody_ class is a simple wrapper for an _SKPhysicsBody_ inst
 @end
 ```
 
-Out _ContactVisitor_ base class implements convenience constructor _contactVisitorWithBody:forContact_ which constructs one of its subclasses based on the physics body category of it's first argument. This is the first part of the double dispatch, we have an instance of a class which is named after one of the bodies in the contact e.g. _BallNodeContactVisitor_ _PaddleNodeContactVisitor_ etc.
+Our _ContactVisitor_ base class implements convenience constructor _contactVisitorWithBody:forContact_, which constructs one of its subclasses based on the physics body category of it's first argument. This is the first part of the double dispatch, we have an instance of a class which is named after one of the bodies in the contact e.g. _BallNodeContactVisitor_ _PaddleNodeContactVisitor_ etc.
 
 
 ```objective-c
@@ -199,7 +199,7 @@ The _visit_ method in our _ContactVisitor_ implements the second part of the dou
 @end
 ```
 
-We now have a class _BallNodeContactVisitor_ which is solely concenred with handling contacts for nodes of class _BallNode_. The methods within the class follow a naming convention determined by the _visit_ method and allows us to determine the outcome of the contact with other node types.
+We now have a class _BallNodeContactVisitor_ which is solely concerned with handling contacts for nodes of class _BallNode_. The methods within the class follow a naming convention determined by the _visit_ method and allows us to determine the outcome of the contact with other node types.
 
 ```objective-c
 @implementation BallNodeContactVisitor
